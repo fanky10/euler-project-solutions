@@ -1,34 +1,42 @@
 package io.github.fanky10.euler_project_solutions;
 
-public class Problem_03 {
+import io.github.fanky10.euler_project_solutions.utils.Log;
+
+public class Problem_03 extends BaseProblem {
+	
 	public static void main(String[] args) {
-		long startMillis = System.currentTimeMillis();
-		System.out.println("result "+solution());
-		long durMillis = System.currentTimeMillis() - startMillis;
-		System.out.println("slow duration "+durMillis +" millis");
+		new Problem_03().solve();
 	}
 	
-	static int MAX_VAL = 4 * 1000* 1000;
-	public static int solution() {
-		int result = 2;
-		int previousValue = 2;
-		int currentValue = 3;
-		while (currentValue < MAX_VAL ) {
-			int aux = currentValue;
-			currentValue = currentValue + previousValue;
-			previousValue = aux;
-			if (currentValue % 2 == 0) {
-				result += currentValue;
+	@Override
+	protected void showSolution() {
+		// https://projecteuler.net/problem=3
+		// target: 600851475143
+		long result = primeFactor(600851475143l);
+		Log.d("Max factor result: "+result);
+	}
+	
+	private long primeFactor(long root) {
+		Log.d("looking for factor: "+root);
+		long factor = root;
+		boolean keepLooking = false;
+		
+		for (long i = 2; i < root; i++) {
+			// starts at 2 because any number is divisible by 1
+			// ends by itself -1 b/c any number is divisible by itself
+			if (root % i == 0) {
+				keepLooking = true;
+				factor = i;
+				Log.d("found divisible: "+i);
+				break;
 			}
 		}
-		return result;
-	}
-	
-	public static int fastSolution() {
-		return sumDivisibleBy(3) + sumDivisibleBy(5) - sumDivisibleBy(15);
-	}
-	private static int sumDivisibleBy(int number) {
-		int p = MAX_VAL / number;
-		return number * (1/2 * p * (p+1));
+		
+		if (keepLooking) {
+			return primeFactor(root/factor);
+		} else {
+			Log.d("stop looking "+factor);
+			return factor;
+		}
 	}
 }
